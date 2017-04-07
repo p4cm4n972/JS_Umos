@@ -1,0 +1,40 @@
+extends layout
+
+block content
+  div(class="grad")
+    div(class="top-bar")
+      div(class="top-bar-left")
+        ul(class="menu")
+          li: img(src="/images/logo.png")
+          li
+      div(class="top-bar-right" id='menu')
+        ul(class="dropdown menu" data-dropdown-menu)
+          li: img(src="images/avatar1.png" alt="joueur 1" width="50px" height="50px")
+          li(id="pseudo1") 
+          li: img(src="images/avatar2.png" alt="joueur 2" width="50px" height="50px")
+          li(id="pseudo2") 
+          
+          li
+            a(href="/") how to play ?
+            ul(class="menu")
+              li manger le plus
+              li de bols de
+              li riz !!!
+          li 
+            a(href="/") best scores
+            ul(class="menu")
+               each val in file
+                  li #{val.username} #{val.score}
+  div(class="row" id="content")
+    div(class="medium-9 medium-centered columns")
+      div(id="ring")
+  form(method="POST", name="myForm")
+    .row
+      .large-10.columns
+        .row.collapse
+          .small-10.columns
+            label(class="error")
+              input(type='text', placeholder='entrer votre pseudo', id="pseudo", name="username" class="error" autofocus, required)
+          .small-2.columns
+            label
+              button( type="submit" class="button") Go !
