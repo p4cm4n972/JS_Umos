@@ -44,7 +44,6 @@ window.addEventListener('DOMContentLoaded', function () {
       avatar.style.position = 'absolute';
       window.document.body.appendChild(avatar);
       score = window.document.createElement('p');
-      score.id = data.id;
       score.style.position = 'absolute';
       score.style.top = "40px";
       score.style.left = "40px";
@@ -70,7 +69,7 @@ window.addEventListener('DOMContentLoaded', function () {
     bolImage.style.width = '50px';
     bolImage.style.height = '50px';
     bol.style.position = 'absolute';
-    window.document.body.appendChild(bol);
+    window.document.getElementById('ring').appendChild(bol);
     bol.addEventListener('click', function (e) {
       var target = e.currentTarget.id;
       var clicker = e.view.socket.id;
@@ -81,16 +80,17 @@ window.addEventListener('DOMContentLoaded', function () {
     });
   }
   //TIMER
-  var clock = function() {$('.clock').FlipClock({
-    clockFace: 'MinuteCounter'
-  });
+  var clock = function () {
+    $('.clock').FlipClock({
+      clockFace: 'MinuteCounter'
+    });
   };
   //---------------------------------------------------------
   //GESTIONS DES EVENEMENTS / AVATARS
   socket.on('update', function (data) {
     drawAvatar(data.avatar);
   });
-  
+
   //déplacements Avatars
   window.addEventListener('mousemove', function (event) {
     socket.emit('move', {
@@ -114,21 +114,21 @@ window.addEventListener('DOMContentLoaded', function () {
     socket.emit('start', {});
     socket.emit('clock', {});
   }
-   socket.on('clock', function () {
+  socket.on('clock', function () {
     clock();
   });
-  //apparation des bols
+  //GAME END
+
+
+  //animation des bols
+    var myReq;
   socket.on('animation', function (coord) {
     drawBol(coord);
-  });
-  //animation des bols
-  socket.on('animation', function (coord) {
     var bolArray = [];
     bolArray.push(coord);
     var l = 2;
     var h = 0;
     var bolAnimate = function () {
-      requestAnimationFrame(bolAnimate);
       bolArray.forEach(function (element) {
         var img = document.getElementById(element.id);
         img.style.left = parseFloat(img.style.left) + l + 'px';
@@ -144,8 +144,10 @@ window.addEventListener('DOMContentLoaded', function () {
           img.style.top = parseFloat(img.style.top) + h + 'px';
         };
       });
+    myReq = requestAnimationFrame(bolAnimate);
     };
-    bolAnimate();
+    myReq = requestAnimationFrame(bolAnimate);
+    
   });
   //disparition des bols cliqués
   socket.on('eatAction', function (clicking) {
@@ -155,12 +157,23 @@ window.addEventListener('DOMContentLoaded', function () {
       eating.style.display = 'none';
       //GESTION DU SCORE
       var totalNumber = parseFloat(document.getElementById(clicking.clicker).firstElementChild.innerText);
-      console.log(document.getElementById(clicking.clicker).firstChild);
-      console.log(document.getElementById(clicking.clicker).firstElementChild);
       document.getElementById(clicking.clicker).firstElementChild.innerText = totalNumber + i;
 
     };
+    if (document.getElementById(clicking.clicker).firstElementChild.innerText == '5') {
+      var winner = clicking.clicker;
+     
+      socket.emit('win', {
+        winner
+      });
+    }
   });
+
+  socket.on('winner', function (gagnant) {
+    document.getElementById(gagnant.gagnant).firstElementChild.innerHTML = "<h2>YOU WIN</h2>";
+  })
+
+
   //
 
 

@@ -13,11 +13,11 @@ var db = require('./public/javascripts/db.js');
 
 
 
-db.connect('mongodb://jsumos:made81MA@ds155080.mlab.com:55080/jsumos', function(err) {
+db.connect('mongodb://jsumos:made81MA@ds155080.mlab.com:55080/jsumos', function (err) {
   if (err) {
     console.log('Impossible de se connecter à la base de données.');
     process.exit(1);
-  } 
+  }
 });
 var log = require('./routes/log');
 var index = require('./routes/index');
@@ -42,7 +42,9 @@ app.set('view engine', 'pug');
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -87,15 +89,15 @@ var coordsAleatoire = function (min, max) {
 var player = 0;
 var joueur;
 io.on('connection', function (socket) {
-  
+
   //restriction à 2 connection
   /*io.of('/').clients(function (error, clients) {
     if (clients.length === 2) {
       io.emit('update', { avatar, mesBols });
     }
   });*/
-   
-      
+
+
   player++;
   mesBols = [];
   var avatar = {
@@ -111,12 +113,14 @@ io.on('connection', function (socket) {
 
 
 
-  if (player == 2) { player = 0 };
+  if (player == 2) {
+    player = 0
+  };
 
   //UPDATE BOLS
   function createBol() {
     var bol = {
-     id: guid(),
+      id: guid(),
       top: coordsAleatoire(100, 700) + 'px',
       left: coordsAleatoire(10, 900) + 'px',
       width: '50px',
@@ -130,24 +134,41 @@ io.on('connection', function (socket) {
     mesBols.push(createBol())
   }
   //EMISSIONS DES DONNEES
-socket.on('login', function(pseudoValue){
-  var pseudoOK = pseudoValue.pseudoValue;
-io.emit('login', pseudoOK);
-})
+  socket.on('login', function (pseudoValue) {
+    var pseudoOK = pseudoValue.pseudoValue;
+    io.emit('login', pseudoOK);
+  })
   socket.on('start', function () {
     mesBols.forEach(function (element) {
       io.emit('animation', element);
     });
   });
- socket.on('clock', function () {
-      io.emit('clock');
+  socket.on('clock', function () {
+    io.emit('clock');
+  });
+ var ioOf = function () {
+      var client = io.of('/').clients(function (error, clients) {
+        console.log('clients0: ' + clients[0]);
+        console.log('clients1: ' + clients[1]);
+      });
+        
+    };
+
+  socket.on('win', function (winner) {
+ var gagnant = winner.winner
+      io.emit('winner', {
+        gagnant
+      });
   })
   socket.on('move', function (position) {
-        avatar.top = parseFloat(position.top) + 10 + 'px';
-        avatar.left = parseFloat(position.left) + 10 + 'px';
+    avatar.top = parseFloat(position.top) + 10 + 'px';
+    avatar.left = parseFloat(position.left) + 10 + 'px';
 
-        io.emit('update', {avatar,mesBols});
-      });
+    io.emit('update', {
+      avatar,
+      mesBols
+    });
+  });
 
   socket.on('eat', function (clicking) {
     io.emit('eatAction', clicking);
