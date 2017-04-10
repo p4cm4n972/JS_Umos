@@ -160,7 +160,7 @@ window.addEventListener('DOMContentLoaded', function () {
       document.getElementById(clicking.clicker).firstElementChild.innerText = totalNumber + i;
 
     };
-    if (document.getElementById(clicking.clicker).firstElementChild.innerText == '5') {
+    if (document.getElementById(clicking.clicker).firstElementChild.innerText == '20') {
       var winner = clicking.clicker;
      
       socket.emit('win', {
