@@ -97,6 +97,9 @@ io.on('connection', function (socket) {
     }
   });*/
 
+  if (player == 2) {
+    player = 0
+  };
 
   player++;
   mesBols = [];
@@ -113,9 +116,6 @@ io.on('connection', function (socket) {
 
 
 
-  if (player == 2) {
-    player = 0
-  };
 
   //UPDATE BOLS
   function createBol() {

@@ -47,6 +47,8 @@ window.addEventListener('DOMContentLoaded', function () {
       score.style.position = 'absolute';
       score.style.top = "40px";
       score.style.left = "40px";
+      avatar.style.backgroundImage = 'url(' + data.url + ')';
+
       avatar.appendChild(score);
       total = data.total;
       score.innerText = this.total;
@@ -121,7 +123,7 @@ window.addEventListener('DOMContentLoaded', function () {
 
 
   //animation des bols
-    var myReq;
+  var myReq;
   socket.on('animation', function (coord) {
     drawBol(coord);
     var bolArray = [];
@@ -144,10 +146,10 @@ window.addEventListener('DOMContentLoaded', function () {
           img.style.top = parseFloat(img.style.top) + h + 'px';
         };
       });
-    myReq = requestAnimationFrame(bolAnimate);
+      myReq = requestAnimationFrame(bolAnimate);
     };
     myReq = requestAnimationFrame(bolAnimate);
-    
+
   });
   //disparition des bols cliqués
   socket.on('eatAction', function (clicking) {
@@ -162,7 +164,7 @@ window.addEventListener('DOMContentLoaded', function () {
     };
     if (document.getElementById(clicking.clicker).firstElementChild.innerText == '20') {
       var winner = clicking.clicker;
-     
+
       socket.emit('win', {
         winner
       });
